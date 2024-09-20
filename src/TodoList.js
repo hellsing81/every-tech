@@ -5,11 +5,12 @@ import { v4 as uuidv4 } from 'uuid';
 const TodoList = () => {
     const [todos, setTodos] = useState([]);
     const [newTodos, setNewTodos] = useState('');
+    const [searchTerm, setSearchTerm] = useState('')
 
-    const handleSubmit = (e) => {   
+    const handleSubmit = (e) => {
         e.preventDefault();
         if (newTodos.trim() !== '') {
-            setTodos([...todos, { id: uuidv4(), text: newTodos }]);
+            setTodos([...todos, { id: uuidv4(), text: newTodos, completed: false }]);
             setNewTodos('');
         }
     }
@@ -38,54 +39,84 @@ const TodoList = () => {
         newTodos.splice(result.destination.index, 0, reorderedTodo);
         setTodos(newTodos);
     }
+    const handleToggleComplete = (index) => {
+        const newTodos = [...todos];
+        newTodos[index].completed = !newTodos[index].completed;
+        setTodos(newTodos);
+    }
+    const filteredTodos = todos.filter((todo) =>
+        todo.text.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
             <div className="container mx-auto p-4">
                 <form onSubmit={handleSubmit} className="mb-4">
+                    <div
+                    className="container mx-auto p-4 flex flex-col items-center"
+                    >
                     <input
                         type="text"
                         value={newTodos}
                         onChange={(e) => setNewTodos(e.target.value)}
-                        className="text-black border border-gray-300 rounded px-2 py-1 mr-2"
+                        className="text-black border border-gray-300 rounded px-2 py-1 mr-2 mb-1"
                         placeholder="Добавить новое дело"
                     />
+                    <input
+                        type='text'
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="text-black botrder border-gray-300 rounded px-2 py-1 mr-2 mt-1"
+                        placeholder="Поиск дел"
+                    />
+                    </div>
                     <button
                         type="submit"
                         className="bg-blue-500 text-white px-4 py-1 rounded"
                     >
                         Добавить
                     </button>
+
                 </form>
-                <Droppable 
-                droppableId="todos"
+                <Droppable
+                    droppableId="todos"
                 >
-                
+
                     {(provided) => (
                         <ul {...provided.droppableProps} ref={provided.innerRef}>
-                            {todos.map((todo, index) => (
+                            {filteredTodos.map((todo, index) => (
                                 <Draggable key={todo.id} draggableId={todo.id} index={index}>
                                     {(provided) => (
                                         <li
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
                                             ref={provided.innerRef}
-                                            className="border-b border-gray-300 py-2 flex justify-between items-center"
+                                            className={`border-b border-gray-300 py-2 flex justify-between items-center ${todo.completed
+                                                ? 'line-thgrough text-gray-500' : ''}`}
                                         >
                                             {todo.text}
                                             <div>
                                                 <button
+                                                    disabled={todo.completed}
                                                     onClick={() => handleEdit(index)}
-                                                    className="mx-2 bg-green-500 hover:text-green-700 mr-2 px-4 py-1 rounded"
+                                                    className={`mx-2 bg-green-500 hover:text-green-700 mr-2 px-4 py-1 rounded 
+                                                        ${todo.completed ? 'cursor-not-allowed' : ' '}`}
                                                 >
                                                     Изменить
                                                 </button>
+
                                                 <button
                                                     onClick={() => handleDelete(index)}
                                                     className="mx-2 text-white bg-red-500 hover:text-red-750 px-4 py-1 rounded"
                                                 >
                                                     Удалить
                                                 </button>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={todo.completed}
+                                                    onChange={() => handleToggleComplete(index)}
+                                                    className="mx-2 bg-blue mr-2 rounded-full w-10 h-10 text-center align-middle"
+                                                />
                                             </div>
                                         </li>
                                     )}
