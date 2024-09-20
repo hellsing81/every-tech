@@ -47,7 +47,7 @@ const TodoList = () => {
     const filteredTodos = todos.filter((todo) =>
         todo.text.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
+//20.09 17:13 push git
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
             <div className="container mx-auto p-4">
