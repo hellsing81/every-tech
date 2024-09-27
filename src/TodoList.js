@@ -6,7 +6,7 @@ const TodoList = () => {
     const [todos, setTodos] = useState([]);
     const [newTodos, setNewTodos] = useState('');
     const [searchTerm, setSearchTerm] = useState('')
-
+    const [font, setFont] = useState('sans')
     const handleSubmit = (e) => {
         e.preventDefault();
         if (newTodos.trim() !== '') {
@@ -47,14 +47,23 @@ const TodoList = () => {
     const filteredTodos = todos.filter((todo) =>
         todo.text.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    const toggleFont =  () => {
+        setFont(font ==='sans' ? 'serif' : 'sans')
+    };
 //20.09 17:13 push git
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
-            <div className="container mx-auto p-4">
+            <div className={`container mx-auto p-4 font-${font}`}>
                 <form onSubmit={handleSubmit} className="mb-4">
                     <div
                     className="container mx-auto p-4 flex flex-col items-center"
                     >
+                        <button
+                        onClick={toggleFont}
+                        className="bg-blue-500 text-white px-4 py-1 rounded mt-2"
+                        >
+                        Изменить шрифт
+                        </button>
                     <input
                         type="text"
                         value={newTodos}
