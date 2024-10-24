@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -7,10 +7,11 @@ const TodoList = () => {
     const [newTodos, setNewTodos] = useState('');
     const [searchTerm, setSearchTerm] = useState('')
     const [font, setFont] = useState('sans')
+    const [dueDate, setDueDate] = useState('')
     const handleSubmit = (e) => {
         e.preventDefault();
         if (newTodos.trim() !== '') {
-            setTodos([...todos, { id: uuidv4(), text: newTodos, completed: false }]);
+            setTodos([...todos, { id: uuidv4(), text: newTodos, completed: false, dueDate }]);
             setNewTodos('');
         }
     }
@@ -48,8 +49,21 @@ const TodoList = () => {
         todo.text.toLowerCase().includes(searchTerm.toLowerCase())
     );
     const toggleFont =  () => {
-        setFont(font ==='sans' ? 'serif' : 'sans')
+        setFont(font ==='sans' ? 'Courier New' : 'sans')
+        console.log('Шрифт изменён')
     };
+    useEffect(()=> {
+        const interval = setInterval(() => {
+            const now = new Date();
+            todos.forEach((todo) => {
+                const dueDate = new Date(todo.dueDate);
+                if (dueDate <= now && !todo.completed) {
+                    alert(`Срок выполнения дела "${todo.text}" истек...`)
+                }
+            });
+        },60000);
+        return () => clearInterval(interval);
+    },[todos])
 //20.09 17:13 push git
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
@@ -60,7 +74,7 @@ const TodoList = () => {
                     >
                         <button
                         onClick={toggleFont}
-                        className="bg-blue-500 text-white px-4 py-1 rounded mt-2"
+                        className="bg-blue-500 text-white px-4 py-1 rounded mt-2 mb-2"
                         >
                         Изменить шрифт
                         </button>
@@ -70,6 +84,13 @@ const TodoList = () => {
                         onChange={(e) => setNewTodos(e.target.value)}
                         className="text-black border border-gray-300 rounded px-2 py-1 mr-2 mb-1"
                         placeholder="Добавить новое дело"
+                    />
+                    <input
+                    type="date"
+                    value={dueDate}
+                    onChange={(e)=> setDueDate(e.target.value)}
+                    className="text-black border border-gray-300 rounded px-2 py-1 mr-2 mb-2"
+                    placeholder="Срок выполнения"
                     />
                     <input
                         type='text'
