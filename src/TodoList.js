@@ -30,7 +30,6 @@ const TodoList = () => {
             setTodos(newTodos);
         }
     };
-
     const handleDragEnd = (result) => {
         if (!result.destination || result.destination.droppableId !== 'todos') {
             return;
@@ -48,11 +47,11 @@ const TodoList = () => {
     const filteredTodos = todos.filter((todo) =>
         todo.text.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    const toggleFont =  () => {
-        setFont(font ==='sans' ? 'Courier New' : 'sans')
+    const toggleFont = () => {
+        setFont(font === 'sans' ? 'Courier New' : 'sans')
         console.log('Шрифт изменён')
     };
-    useEffect(()=> {
+    useEffect(() => {
         const interval = setInterval(() => {
             const now = new Date();
             todos.forEach((todo) => {
@@ -61,44 +60,45 @@ const TodoList = () => {
                     alert(`Срок выполнения дела "${todo.text}" истек...`)
                 }
             });
-        },60000);
+        }, 60000);
         return () => clearInterval(interval);
-    },[todos])
-//20.09 17:13 push git
+    }, [todos])
+    //20.09 17:13 push git
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
             <div className={`container mx-auto p-4 font-${font}`}>
                 <form onSubmit={handleSubmit} className="mb-4">
                     <div
-                    className="container mx-auto p-4 flex flex-col items-center"
+                        className="container mx-auto p-4 flex flex-col items-center"
                     >
                         <button
-                        onClick={toggleFont}
-                        className="bg-blue-500 text-white px-4 py-1 rounded mt-2 mb-2"
+                            onClick={toggleFont}
+                            className="bg-blue-500 text-white px-4 py-1 mr-2 rounded mt-2 mb-2"
                         >
-                        Изменить шрифт
+                            Изменить шрифт
                         </button>
-                    <input
-                        type="text"
-                        value={newTodos}
-                        onChange={(e) => setNewTodos(e.target.value)}
-                        className="text-black border border-gray-300 rounded px-2 py-1 mr-2 mb-1"
-                        placeholder="Добавить новое дело"
-                    />
-                    <input
-                    type="date"
-                    value={dueDate}
-                    onChange={(e)=> setDueDate(e.target.value)}
-                    className="text-black border border-gray-300 rounded px-2 py-1 mr-2 mb-2"
-                    placeholder="Срок выполнения"
-                    />
-                    <input
-                        type='text'
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="text-black botrder border-gray-300 rounded px-2 py-1 mr-2 mt-1"
-                        placeholder="Поиск дел"
-                    />
+                        <input
+                            type="date"
+                            value={dueDate}
+                            onChange={(e) => setDueDate(e.target.value)}
+                            className="text-black border border-gray-300 rounded px-2 py-1 mr-2 mb-2 w-42"
+                            placeholder="Срок выполнения"
+                        />
+                        <input
+                            type="text"
+                            value={newTodos}
+                            onChange={(e) => setNewTodos(e.target.value)}
+                            className="text-black border border-gray-300 rounded px-2 py-1 mr-2 mb-1"
+                            placeholder="Добавить новое дело"
+                        />
+
+                        <input
+                            type='text'
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="text-black botrder border-gray-300 rounded px-2 py-1 mr-2 mt-1"
+                            placeholder="Поиск дел"
+                        />
                     </div>
                     <button
                         type="submit"
